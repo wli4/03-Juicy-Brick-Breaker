@@ -6,7 +6,7 @@ onready var target_y = position.y
 var row = 0
 var col = 0
 
-export var appear_speed = 1.5
+export var appear_speed = 3
 export var fall_speed = 1.0
 
 var dying = false
@@ -71,7 +71,7 @@ func _on_HUD_changed():
 
 func die():
 	dying = true
-	var target_color = $Color.color
+	var target_color = $Color.color.darkened(0.75)
 	target_color.a = 0
 	var fall_duration = randf()*fall_speed + 1
 

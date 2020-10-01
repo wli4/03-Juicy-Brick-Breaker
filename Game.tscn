@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://Paddle/Paddle.gd" type="Script" id=1]
 [ext_resource path="res://Ball/Ball_Container.gd" type="Script" id=2]
@@ -9,6 +9,11 @@
 [ext_resource path="res://Assets/confetti.png" type="Texture" id=7]
 [ext_resource path="res://Assets/bubble.png" type="Texture" id=8]
 [ext_resource path="res://Camera/Camera.gd" type="Script" id=9]
+[ext_resource path="res://Ball/Trail_Container.gd" type="Script" id=10]
+[ext_resource path="res://Camera/WorldEnvironment.gd" type="Script" id=11]
+[ext_resource path="res://Paddle/Face.gd" type="Script" id=12]
+[ext_resource path="res://Assets/Datalegreya-Thin.otf" type="DynamicFontData" id=16]
+[ext_resource path="res://Audio/Music.gd" type="Script" id=17]
 
 [sub_resource type="Gradient" id=1]
 colors = PoolColorArray( 1, 1, 1, 1, 1, 1, 1, 0 )
@@ -93,11 +98,17 @@ color_ramp = SubResource( 12 )
 hue_variation = 0.7
 hue_variation_random = 0.25
 
+[sub_resource type="DynamicFont" id=16]
+size = 36
+font_data = ExtResource( 16 )
+
 [node name="Game" type="Node2D"]
 
 [node name="Background" type="ColorRect" parent="."]
-margin_right = 1024.0
-margin_bottom = 768.0
+margin_left = -200.0
+margin_top = -200.0
+margin_right = 1275.0
+margin_bottom = 968.0
 color = Color( 0, 0, 0, 1 )
 script = ExtResource( 6 )
 __meta__ = {
@@ -146,6 +157,9 @@ shape = SubResource( 8 )
 
 [node name="Tween" type="Tween" parent="Paddle_Container/Paddle"]
 
+[node name="Face" type="Node2D" parent="Paddle_Container/Paddle"]
+script = ExtResource( 12 )
+
 [node name="Particles2D" type="Particles2D" parent="Paddle_Container"]
 position = Vector2( 507, 700 )
 emitting = false
@@ -155,11 +169,15 @@ one_shot = true
 process_material = SubResource( 15 )
 texture = ExtResource( 7 )
 
+[node name="Trail_Container" type="Node2D" parent="."]
+script = ExtResource( 10 )
+
 [node name="Ball_Container" type="Node2D" parent="."]
 script = ExtResource( 2 )
 
 [node name="Camera" type="Camera2D" parent="."]
 position = Vector2( 512, 384 )
+current = true
 script = ExtResource( 9 )
 
 [node name="Starting" type="Node2D" parent="."]
@@ -169,12 +187,25 @@ script = ExtResource( 9 )
 [node name="Countdown" type="Label" parent="Starting"]
 margin_right = 1024.0
 margin_bottom = 100.0
+custom_fonts/font = SubResource( 16 )
 text = "Starting in: "
 align = 1
 valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+script = ExtResource( 11 )
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+script = ExtResource( 17 )
+
+[node name="Effect_Paddle" type="AudioStreamPlayer" parent="."]
+
+[node name="Effect_Wall" type="AudioStreamPlayer" parent="."]
+
+[node name="Effect_Brick" type="AudioStreamPlayer" parent="."]
 
 [node name="HUD" type="Control" parent="."]
 visible = false
@@ -221,9 +252,9 @@ __meta__ = {
 
 [node name="Particles" type="Control" parent="HUD/Menu"]
 margin_left = 10.0
-margin_top = 50.0
+margin_top = 55.0
 margin_right = 10.0
-margin_bottom = 50.0
+margin_bottom = 55.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -236,8 +267,9 @@ __meta__ = {
 
 [node name="Blocks" type="Control" parent="HUD/Menu"]
 margin_left = 10.0
-margin_top = 85.0
-margin_bottom = 145.0
+margin_top = 95.0
+margin_right = 10.0
+margin_bottom = 95.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -250,26 +282,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Blocks_Fall" type="CheckBox" parent="HUD/Menu/Blocks"]
+[node name="Blocks_Fall_and_Fade" type="CheckBox" parent="HUD/Menu/Blocks"]
 margin_top = 35.0
 margin_right = 134.0
 margin_bottom = 67.0
-text = "Blocks Fall"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Blocks_Fade" type="CheckBox" parent="HUD/Menu/Blocks"]
-margin_top = 70.0
-margin_right = 134.0
-margin_bottom = 104.0
-text = "Blocks Fade"
+text = "Blocks Fall and Fade"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Ball" type="Control" parent="HUD/Menu"]
-margin_top = 220.0
+margin_top = 190.0
+margin_bottom = 190.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -288,6 +312,16 @@ margin_left = 35.0
 margin_right = 124.0
 margin_bottom = 14.0
 text = "Screen Shake"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Ball_Trail" type="CheckBox" parent="HUD/Menu/Ball"]
+margin_left = 10.0
+margin_top = 45.0
+margin_right = 146.419
+margin_bottom = 81.4193
+text = "Ball Trail"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -318,7 +352,57 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Paddle_Face" type="CheckBox" parent="HUD/Menu/Paddle"]
+margin_top = 70.0
+margin_right = 135.0
+margin_bottom = 102.0
+text = "Paddle Face"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Audio" type="Control" parent="HUD/Menu"]
+margin_left = 10.0
+margin_top = 410.0
+margin_right = 10.0
+margin_bottom = 410.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Audio_music" type="CheckBox" parent="HUD/Menu/Audio"]
+margin_right = 136.419
+margin_bottom = 36.4193
+text = "Music"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Audio_effects" type="CheckBox" parent="HUD/Menu/Audio"]
+margin_top = 35.0
+margin_right = 135.0
+margin_bottom = 67.0
+text = "Sound Effects"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Effects" type="Control" parent="HUD/Menu"]
+margin_left = 10.0
+margin_top = 500.0
+margin_right = 10.0
+margin_bottom = 500.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Effects_blur" type="CheckBox" parent="HUD/Menu/Effects"]
+margin_right = 136.419
+margin_bottom = 36.4193
+text = "Effects: blur"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Reset" type="Button" parent="HUD/Menu"]
 margin_left = 30.0
@@ -344,10 +428,14 @@ position = Vector2( 512, 384 )
 [connection signal="toggled" from="HUD/Menu/Color/Color" to="HUD" method="_on_Color_toggled"]
 [connection signal="toggled" from="HUD/Menu/Particles/Particles" to="HUD" method="_on_Particles_toggled"]
 [connection signal="toggled" from="HUD/Menu/Blocks/Blocks_Appear" to="HUD" method="_on_Blocks_Appear_toggled"]
-[connection signal="toggled" from="HUD/Menu/Blocks/Blocks_Fall" to="HUD" method="_on_Blocks_Fall_toggled"]
-[connection signal="toggled" from="HUD/Menu/Blocks/Blocks_Fade" to="HUD" method="_on_Blocks_Fade_toggled"]
+[connection signal="toggled" from="HUD/Menu/Blocks/Blocks_Fall_and_Fade" to="HUD" method="_on_Blocks_Fall_and_Fade_toggled"]
 [connection signal="value_changed" from="HUD/Menu/Ball/Screen_Shake" to="HUD" method="_on_Screen_Shake_value_changed"]
+[connection signal="toggled" from="HUD/Menu/Ball/Ball_Trail" to="HUD" method="_on_Ball_Trail_toggled"]
 [connection signal="toggled" from="HUD/Menu/Paddle/Paddle_Appear" to="HUD" method="_on_Paddle_Appear_toggled"]
 [connection signal="toggled" from="HUD/Menu/Paddle/Paddle_Stretch" to="HUD" method="_on_Paddle_Stretch_toggled"]
+[connection signal="toggled" from="HUD/Menu/Paddle/Paddle_Face" to="HUD" method="_on_Paddle_Face_toggled"]
+[connection signal="toggled" from="HUD/Menu/Audio/Audio_music" to="HUD" method="_on_Audio_music_toggled"]
+[connection signal="toggled" from="HUD/Menu/Audio/Audio_effects" to="HUD" method="_on_Audio_effects_toggled"]
+[connection signal="toggled" from="HUD/Menu/Effects/Effects_blur" to="HUD" method="_on_Effects_blur_toggled"]
 [connection signal="pressed" from="HUD/Menu/Reset" to="HUD" method="_on_Reset_pressed"]
 [connection signal="pressed" from="HUD/Menu/Quit" to="HUD" method="_on_Quit_pressed"]

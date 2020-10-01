@@ -15,7 +15,7 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Tweening and Screen Shake"
+config/name="Music and Sound"
 run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
 
