@@ -1,7 +1,11 @@
-# Exercise-03c-Music-and-Sound
-Exercise for MSCH-C220, 1 October 2020
+# Project Name
+03-Juicy-Brick-Breaker
 
-The third part in a series exploring the "Juice it or Lose it" GDC 2012 presentation in Godot.
+A project for MSCH-C220, 10 October 2020
+
+Description
+
+A fun project exploring the "Juice it or Lose it" GDC 2012 presentation in Godot.
 
 ## Implementation
 Built using Godot 3.2.2
@@ -20,3 +24,6 @@ None
 Wangyin Li
 
 ```
+
+
+
