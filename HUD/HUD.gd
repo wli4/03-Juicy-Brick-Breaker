@@ -37,6 +37,9 @@ func _ready():
 	$Menu/Color/Color.pressed = true
 	$Menu/Particles/Particles.pressed = true
 	$Menu/Ball/Screen_Shake.value = screen_shake
+	$Menu/Paddle/Paddle_Face.pressed = true
+	$Menu/Audio/Audio_music.pressed = true
+	$Menu/Audio/Audio_effects.pressed = true
 
 func reset_values():
 	emit_signal("changed")
